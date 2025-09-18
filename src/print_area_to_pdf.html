@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Print-area → PDF (Download)</title>
+  <style>
+    :root{--accent:#0b74de;--muted:#555}
+    body{font-family:Inter, system-ui, Arial, sans-serif;margin:24px;background:#f4f7fb;color:#222}
+    .container{max-width:900px;margin:0 auto}
+    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+    h1{font-size:20px;margin:0}
+    .controls{display:flex;gap:8px}
+    button{background:var(--accent);color:#fff;border:0;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:600}
+    button.secondary{background:#fff;color:var(--accent);border:1px solid rgba(11,116,222,.14)}
+    /* The print area that will be converted to PDF */
+    .print-area{background:#fff;padding:28px;border-radius:10px;box-shadow:0 6px 18px rgba(12,40,80,.06)}
+    .invoice-head{display:flex;justify-content:space-between;align-items:flex-start}
+    .invoice-head .left{max-width:65%}
+    .muted{color:var(--muted);font-size:13px}
+    .items{margin-top:18px;border-collapse:collapse;width:100%}
+    .items th,.items td{padding:10px 8px;border-bottom:1px solid #eee;text-align:left}
+    .items th{background:#fafafa;font-weight:700}
+    .total{display:flex;justify-content:flex-end;margin-top:10px;font-weight:700}
+    /* page-break helper for multi-page PDFs */
+    .page-break{page-break-after:always}
+    /* Make sure fonts & layout look good when generating PDF */
+    @media print{
+      body{background:#fff;margin:0}
+      .controls{display:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Create PDF from <code>.print-area</code></h1>
+      <div class="controls">
+        <button id="downloadBtn">⬇️ Download PDF</button>
+        <button id="printBtn" class="secondary">🖨️ Print</button>
+      </div>
+    </header>
+
+    <!-- THIS is the element we convert to PDF -->
+    <div class="print-area" id="printArea">
+      <div class="invoice-head">
+        <div class="left">
+          <h2 style="margin:0 0 6px 0">Acme Travel — Booking Summary</h2>
+          <div class="muted">Booking ID: <strong>#A123456</strong> • Date: <span id="today"></span></div>
+        </div>
+        <div class="right" style="text-align:right">
+          <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='40'><rect rx='8' width='120' height='40' fill='%230b74de'/><text x='12' y='26' font-size='16' fill='white' font-family='Arial'>ACME</text></svg>" alt="logo" style="height:40px">
+        </div>
+      </div>
+
+      <section style="margin-top:18px">
+        <p class="muted">Passenger: <strong>Vinod Kumar</strong> · Route: <strong>DEL → BOM</strong></p>
+
+        <table class="items">
+          <thead>
+            <tr><th>Flight</th><th>Depart</th><th>Arrive</th><th>Class</th><th>Price</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>AI-202</td><td>2025-10-01 07:20</td><td>2025-10-01 09:05</td><td>Economy</td><td>$82.70</td></tr>
+            <tr><td>AI-204</td><td>2025-10-07 16:40</td><td>2025-10-07 18:30</td><td>Economy</td><td>$78.25</td></tr>
+          </tbody>
+        </table>
+
+        <div class="total">Total: <span style="margin-left:8px">$160.95</span></div>
+      </section>
+
+      <!-- page break example (uncomment to test multi-page) -->
+      <!-- <div class="page-break"></div>
+      <h3 style="margin-top:24px">Extra page content</h3>
+      <p>More content that will continue on a second page when exported to a PDF.</p> -->
+
+      <hr style="margin:22px 0; border:none; border-top:1px solid #f0f0f0">
+      <footer class="muted">This is a sample export. Make sure any external images are CORS-enabled or embedded as data URIs for best results.</footer>
+    </div>
+
+    <p style="margin-top:12px;color:var(--muted);font-size:13px">Tip: edit the content inside the <code>.print-area</code> element. Click <strong>Download PDF</strong> to generate an A4 PDF.</p>
+  </div>
+
+  <!-- html2pdf bundle (includes html2canvas + jsPDF) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+  <script>
+    // small helper to show today's date in the sample
+    document.getElementById('today').textContent = new Date().toLocaleDateString();
+
+    const downloadBtn = document.getElementById('downloadBtn');
+    const printBtn = document.getElementById('printBtn');
+    const printArea = document.querySelector('.print-area');
+
+    downloadBtn.addEventListener('click', () => {
+      // Options — tweak as needed
+      const opt = {
+        margin:       [10, 10, 10, 10], // top, left, bottom, right (mm when using jsPDF unit mm)
+        filename:     'booking-summary.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, logging: false },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      // Create PDF
+      html2pdf().set(opt).from(printArea).save();
+    });
+
+    printBtn.addEventListener('click', () => {
+      // print the print-area only — make a copy so the page layout doesn't break
+      const clone = printArea.cloneNode(true);
+      const w = window.open('', '_blank');
+      w.document.write('<!doctype html><html><head><title>Print</title>');
+      // small style to keep it tidy
+      w.document.write('<style>body{font-family:Arial,Helvetica,sans-serif;margin:20px;color:#222}.print-area{box-shadow:none}</style>');
+      w.document.write('</head><body>');
+      w.document.body.appendChild(clone);
+      w.document.close();
+      w.focus();
+      setTimeout(()=>{ w.print(); w.close(); }, 250);
+    });
+  </script>
+</body>
+</html>

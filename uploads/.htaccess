@@ -1,0 +1,9 @@
+# Prevent execution of PHP and other server-side scripts in uploads
+<FilesMatch "\.(php|php5|php7|phtml|phar|pl|cgi|asp|aspx|js)$">
+    Require all denied
+</FilesMatch>
+
+# Deny access to hidden files (.htaccess, .git, etc.)
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>

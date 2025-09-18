@@ -1,0 +1,89 @@
+RewriteEngine On
+
+# Redirect all to HTTPS with www
+RewriteCond %{HTTPS} off [OR]
+RewriteCond %{HTTP_HOST} !^www\.flycheapreservation\.com$ [NC]
+RewriteRule ^(.*)$ https://www.flycheapreservation.com/$1 [L,R=301]
+
+# ----------------------------------------------------------------------
+# Basic Security
+# ----------------------------------------------------------------------
+
+# Disable directory browsing
+Options -Indexes
+
+# Protect sensitive files (but allow PHP to run)
+<FilesMatch "\.(htaccess|htpasswd|ini|log|conf|env)$">
+  Require all denied
+</FilesMatch>
+
+# Block suspicious query strings
+RewriteCond %{QUERY_STRING} (\.\./|\.\.\\) [NC,OR]
+RewriteCond %{QUERY_STRING} (base64_encode|eval\() [NC,OR]
+RewriteCond %{QUERY_STRING} (GLOBALS|REQUEST|proc/self) [NC]
+RewriteRule .* - [F,L]
+
+# ----------------------------------------------------------------------
+# Security Headers
+# ----------------------------------------------------------------------
+<IfModule mod_headers.c>
+  Header always set X-Frame-Options "DENY"
+  Header always set X-XSS-Protection "1; mode=block"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
+
+# ----------------------------------------------------------------------
+# Performance
+# ----------------------------------------------------------------------
+
+# Gzip Compression
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml
+  AddOutputFilterByType DEFLATE text/css text/javascript application/javascript
+  AddOutputFilterByType DEFLATE application/json application/xml
+  AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# Browser Caching
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 1 month"
+  ExpiresByType image/jpg "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/gif "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType text/javascript "access plus 1 month"
+  ExpiresByType application/javascript "access plus 1 month"
+  ExpiresByType application/x-javascript "access plus 1 month"
+  ExpiresByType application/font-woff2 "access plus 1 year"
+  ExpiresByType application/font-woff "access plus 1 year"
+  ExpiresByType font/ttf "access plus 1 year"
+  ExpiresByType font/otf "access plus 1 year"
+</IfModule>
+
+# Disable ETag
+<IfModule mod_headers.c>
+  Header unset ETag
+</IfModule>
+FileETag None
+
+# Keep-Alive
+<IfModule mod_headers.c>
+  Header set Connection keep-alive
+</IfModule>
+
+# Fonts MIME types
+<IfModule mod_mime.c>
+  AddType application/font-woff2 .woff2
+  AddType application/font-woff .woff
+  AddType font/ttf .ttf
+  AddType font/otf .otf
+</IfModule>
+
+# Error Documents
+ErrorDocument 403 /index.php
+ErrorDocument 404 https://flycheapreservation.com/404.php

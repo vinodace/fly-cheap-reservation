@@ -1,0 +1,3 @@
+
+# Error Documents
+ErrorDocument 404 http://localhost/ace-digital-solution/projects/September/flycheapreservation.com/404.php

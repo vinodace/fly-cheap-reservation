@@ -1,0 +1,6 @@
+{
+    "require": {
+        "amadeus4dev/amadeus-php": "^0.3.0",
+        "guzzlehttp/guzzle": "^7.0"
+    }
+}

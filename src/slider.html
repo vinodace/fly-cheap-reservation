@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hover Slider with Scroll and Dots</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 300vh; /* For scroll testing */
+      font-family: sans-serif;
+    }
+
+    #slider {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 80vh;
+      background-color: #000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    #sliderImage {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: cover;
+      transition: opacity 0.5s ease-in-out;
+    }
+
+    .dot-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .dot {
+      width: 30px;
+      height: 30px;
+      margin: 0 5px;
+      border-radius: 50%;
+      background-color: #555;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .dot.active {
+      background-color: #f39c12;
+      font-weight: bold;
+    }
+
+    .spacer {
+      height: 200vh;
+      background: linear-gradient(to bottom, #ddd, #aaa);
+    }
+
+    #slider::after {
+      content: "Scroll on slider to change image";
+      position: absolute;
+      bottom: 10px;
+      color: white;
+      font-size: 1rem;
+      opacity: 0.4;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="slider">
+    <img id="sliderImage" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80" alt="Slider Image">
+    <div class="dot-container" id="dots"></div>
+  </div>
+
+  <div class="spacer"></div>
+  <script>
+    const images = [
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1491553895911-0055eca6402d?auto=format&fit=crop&w=1200&q=80"
+    ];
+
+    let currentIndex = 0;
+    const sliderImage = document.getElementById("sliderImage");
+    const slider = document.getElementById("slider");
+    const dotsContainer = document.getElementById("dots");
+    let isHovering = false;
+
+    // Create dots dynamically
+    images.forEach((_, i) => {
+      const dot = document.createElement("div");
+      dot.classList.add("dot");
+      dot.innerText = i + 1;
+      if (i === 0) dot.classList.add("active");
+      dotsContainer.appendChild(dot);
+    });
+
+    const dots = document.querySelectorAll(".dot");
+
+    function updateImage(index) {
+      sliderImage.src = images[index];
+      dots.forEach(dot => dot.classList.remove("active"));
+      dots[index].classList.add("active");
+    }
+
+    // Mouse hover logic
+    slider.addEventListener("mouseenter", () => {
+      isHovering = true;
+      document.body.style.overflow = "hidden"; // Lock scroll
+    });
+
+    slider.addEventListener("mouseleave", () => {
+      if (currentIndex >= images.length - 1) {
+        document.body.style.overflow = "auto"; // Unlock if last
+      }
+      isHovering = false;
+    });
+
+    // Scroll to change image
+    slider.addEventListener("wheel", (e) => {
+      if (!isHovering) return;
+      e.preventDefault();
+
+      if (e.deltaY > 0 && currentIndex < images.length - 1) {
+        currentIndex++;
+        updateImage(currentIndex);
+      } else if (e.deltaY < 0 && currentIndex > 0) {
+        currentIndex--;
+        updateImage(currentIndex);
+      }
+
+      if (currentIndex >= images.length - 1) {
+        document.body.style.overflow = "auto";
+      }
+    }, { passive: false });
+
+    // Optional: click dots to change image manually
+    dots.forEach((dot, i) => {
+      dot.addEventListener("click", () => {
+        currentIndex = i;
+        updateImage(currentIndex);
+      });
+    });
+  </script>
+
+</body>
+</html>
