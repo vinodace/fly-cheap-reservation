@@ -1,0 +1,30 @@
+/* modal */
+.expedia-popup a {text-decoration: none;}
+.expedia-popup .modal-content {border-radius: 12px; padding: 0px; background: #05203D; }
+.expedia-logo {padding:20px 0; display: flex; justify-content: center; align-items: center; font-size: 24px; font-weight: bold; position: relative; }
+.expedia-logo img {width: 12rem; }
+.expedia-logo-name {font-size:18px; font-weight: 700; display: block; text-align: center; padding: 10px 0;}
+.expedia-buttons .btn {width: 100%; background: #05203D; border-radius:100px; padding: 5px; }
+.phone-offer {background-color: #e78915; color: #fff; font-weight: bold; }
+.agent-image {width: 30%; border-radius: 50%; }
+.plane-img {width: 10rem; margin-right: 20px; }
+.modal-header {border-bottom: none; }
+
+@media (max-width: 576px) {
+  .expedia-logo img {width: 50%; }
+  .plane-img {width: 14rem; margin-right: 10px; }
+  .agent-image {width: 50%; }
+  .phone-offer {font-size: 20px; font-weight: 700; }
+  .modal-body h4 {font-size: 28px; font-weight: 700; }
+  .modal-body p {font-size: 17px; }
+
+}
+
+.modal-body {padding-top :  50px }
+.modal-number-container {display: flex; justify-content: center; align-items: center; background: #1156bb; color: white; margin : 10px; border-radius :100px; padding :10px; }
+.modal-number-container  h4 {font-size: 20px; } 
+.modal-number-container a {color: #fff;}
+.content-center {border-radius: 20px 20px 0 0; background: white; }
+.modal-footer-custom {display: flex; justify-content: space-between; align-items: center ; color : white; padding:0 20px; }
+.expedia-popup {display: none;}
+

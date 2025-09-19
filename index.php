@@ -13,6 +13,81 @@ session_start();
 <?php include("header.php"); ?>
 
 
+<div class="modal fade expedia-popup show" id="myModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <!-- <a href="tel:<?php // echo $phone_web ?>" class="modal-content text-center text-decoration-none text-dark" style="cursor: pointer; display: block; width: 100%;" > -->
+        <div class="modal-content text-center text-decoration-none text-dark" style="cursor: pointer; display: block; width: 100%;">
+            <div class="content-center">
+
+                <div class="modal-body">
+                    <div class="expedia-logo justify-content-center">
+                        <img src="images/expedia-logo.svg" alt="Expedia Logo" loading="lazy"/>
+                    </div>
+                    <p class="expedia-logo-name">EXPEDIA HELP DESK</p>
+
+                    <img src="images/call-girl.png" class="agent-image img-fluid mx-auto" alt="Agent" loading="lazy"/>
+
+                    <p><b>No Hold - Calls Answered in 5 Sec</b></p>
+
+                    <div class="modal-number-container">
+                        <span>
+                            <i class="bi bi-headset" style="font-size:34px;"></i>
+                        </span>
+                        <a href="tel:"><?php echo $phone_web ?></a>
+                    </div>
+                    <p class="text-dark fw-bold">24/7 Reservation Support</p>
+
+                    <div class="row expedia-buttons mb-3">
+                        <?php
+                        $buttons = ["Tickets Booking", "Changes", "Cancellation", "Customer Service"];
+                        foreach ($buttons as $label):
+                        ?>
+                        <div class="col-6 mb-2">
+                            <div class="btn btn-primary w-100"><?php echo $label; ?></div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <a href="tel:+<?php echo $phone_web ?>">
+                        <div class="modal-number-container">
+                            <span>
+                                <i class="bi bi-headset" style="font-size:34px;"></i>
+                            </span>
+                            <h4><?php echo $phone_web ?></h4>
+                        </div>
+                    </a>    
+                </div>
+            </div>
+
+            <div class="modal-footer-custom">
+                <div>
+                    <p class="pt-3">
+                        <span class="pb-2 d-block">24x7 Quick Call Assistance</span>
+                        <a href="tel:<?php echo $phone_web ?>"><i class="bi bi-headset"></i> <?php echo $phone_web ?></a> 
+                    </p>
+                </div>
+
+                <div>
+                    <button class="btn btn-primary" onclick="window.location.href='tel:<?php echo $phone_web ?>'">
+                        Call Now
+                    </button>
+                </div>
+            </div>
+        </div>    
+        <!-- </a> -->
+    </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    if (window.innerWidth <= 768) {
+      const modal = new bootstrap.Modal(document.getElementById('myModal'));
+      modal.show();
+    }
+  });
+
+  
+</script>
+
 <div id="carouselExampleCaptions" class="carousel slide home-slider" data-bs-ride="carousel">
   <div class="carousel-indicators">
     <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>

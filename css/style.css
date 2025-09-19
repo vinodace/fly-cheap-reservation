@@ -1,7 +1,9 @@
 @import 'header.css';
 @import 'footer.css';
+@import 'flight-modal-pop.css';
 @import 'gsap.css';
 @import 'flight-search-form.css';
+
 
 html { scroll-behavior: smooth; }
 body {font-family: "Inter", sans-serif !important; font-weight: 400;}
